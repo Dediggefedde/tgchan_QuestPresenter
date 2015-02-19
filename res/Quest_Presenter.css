@@ -1,21 +1,4 @@
-html, body{
-	height: 100%;margin:0;
-	text-align:center;
-}
-div#image{
-	height:80%;
-	text-align:center;
-	margin:0 auto;
-	position:relative;
-}
-img#DQimage{height:100%;}
-div#DQtext{
-	text-align:justify;
-	color:brown;	
-	padding:1vh 1vh 0px 1vh;
-	display:inline-block;
-	vertical-align:middle;
-}
+/*divides text into intern_Text and intern_Icon using div and img childs*/
 div#DQ_intern_Text{
 	width:80%;
 	margin:1vh;
@@ -23,6 +6,7 @@ div#DQ_intern_Text{
 	display:inline-block;
 	vertical-align:middle;
 }
+/*divides text into intern_Text and intern_Icon using div and img childs*/
 img#DQ_intern_Icon{
 	width:15%;
 	margin:1vh;
@@ -30,41 +14,17 @@ img#DQ_intern_Icon{
 	display:inline-block;
 	vertical-align:middle;
 }
-div#text{
-	display:inline-block;
-	height:19%;
-	background:linear-gradient(0deg, #aaf, #cbe 40%, #ddd) repeat scroll 0 0 rgba(0, 0, 0, 0);
-	background-color:#aaf;
-	box-shadow:inset 0px 0px 0px 2px blue;
-	width:800px;
-	margin:0 auto;	
-	position:relative;  
-	font-size:2.5vh;
-}
-div#DQnext:hover,div#DQprev:hover{
-	opacity:1;	
-}
-div#DQnext,div#DQprev{
-	height:77px;
-	width:30px;
-	position:absolute;    
-	top: 50%;
-	margin-top: -50%;
-	opacity:0.1;
-	background-color:white;
-	cursor:pointer;
-}
-div#DQnext{right: 2px;background-image:url("next.png");}
-div#DQprev{left: 2px;background-image:url("prev.png");}
-@keyframes easerOut {0%{opacity:1;}100%{opacity:0;}}
-@keyframes easerspin {0%{}100%{filter: invert(1);}}
-.easespin{		
-	animation-name: easerspin;
+
+/*Animations*/
+@keyframes Animinvert {0%{}100%{filter: invert(1);}}
+.invert{		
+	animation-name: Animinvert;
 	animation-timing-function: ease-in;
 	animation-duration: 1s;	
 }
-.easeOut{		
-	animation-name: easerOut;
+@keyframes Animeaseout {0%{opacity:1;}100%{opacity:0;}}
+.easeout{		
+	animation-name: Animeaseout;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
 }

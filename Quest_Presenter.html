@@ -3,44 +3,50 @@
   <head>
     <meta charset="utf-8">
     <title>title</title>
+    <link rel="stylesheet" href="res/template.css">
     <link rel="stylesheet" href="res/Quest_Presenter.css">
     <script src="res/Quest_Presenter.js"></script>
     <script>
 	
-	DQ.styles={
-		"red":["<span style='color:red'>","</span>"],
-		"blue":["<span style='color:blue'>","</span>"],
-		"green":["<span style='color:green'>","</span>"],
-	};
-	DQ.inserts={
-		"par":['<br style="display:block;margin:0.2em">'],	
-	};
-	DQ.icons={
-		"mu1":"img_test/124710044949_2.gif",
-	};
+	<!-- custom Base styles -->
+	<!-- use "::base:name; your styled text. ;;" -->
+	DQ.styles["red"]=["<span style='color:red'>","</span>"];
+	DQ.styles["blue"]=["<span style='color:blue'>","</span>"];
+	DQ.styles["green"]=["<span style='color:green'>","</span>"];
 	
-	<!-- Here comes the individual JS content-->	
+	<!-- custom inserts -->
+	<!-- use "here is where ::name:: is inserted" -->	
+	DQ.inserts["par"]='<br style="display:block;margin:0.2em">';
 	
-	DQ.addpage("img_test/Muschio_chapter1.gif",["<span style='font-size:8vh'>Divequest Ch 1</span>"],"easeOut");
+	<!-- custom icons -->
+	<!-- use "icon:name:left" or ...":right" at textstart -->	
+	DQ.icons["mu1"]="img_test/124710044949_2.gif";
+	
+	<!-- custom sounds -->
+	<!-- use "::sound:name; your text" to play a sound at that position -->	
+	DQ.sounds["swords"]="img_test/52458__audione__sword-01.mp3";
+	
+	<!-- add pages -->	
+	DQ.addpage("img_test/Muschio_chapter1.gif",["<span style='font-size:8vh'>Divequest Ch 1</span>"],"easeout");
 	DQ.addpage("img_test/124710021160.gif",[
-		"base::red;My father, the late King Malto of the Grand Kingdom of North Piacevole, was executed when the forces of rebellion seized the capital and claimed for themselves control of the Kingdom.They claimed a great many things, as rebels must, of unfair treatment, overzealous punishment, iron-fisted rule, and of course, excessive taxes.;;",
-		"icon::mu1:right;base::red;I do not know if these charges were true, for I was young and simple. But I escaped alive, and the rebels soon gave up their concerns for me when it became clear I had no chance to reclaim control.::par::My name is Muschio Malto, and I am a Prince without a Kingdom.;;"
-	],"easespin");
+		"::base:red;My father, the late King Malto of the Grand Kingdom of North Piacevole, was executed when the forces of rebellion seized the capital and claimed for themselves control of the Kingdom.They claimed a great many things, as rebels must, of unfair treatment, overzealous punishment, iron-fisted rule, and of course, excessive taxes.;;",
+		"icon::mu1:right;::base:red;I do not know if these charges were true, for I was young and simple. But I escaped alive, and the rebels soon gave up their concerns for me when it became clear I had no chance to reclaim control.::par::My name is Muschio Malto, and I am a Prince without a Kingdom.;;"
+	],"invert");
 	DQ.addpage("img_test/Muschio_chapter1.gif",[
-		"icon::mu1:left;base::red;I have lived the years of interim alone in a quiet home out in the woods, near the small town of Iniziare Citta. But I had more ambitious plans than to live my life in solitude and poverty, so I sold my home, bought equipment fit for an adventurer, and set off to this wretched place.;;",
-		"icon::mu1:right;base::red;This subterranean, cliffside is known as the Den of the Red Fang, and inasmuch as I have come to understand it, that makes this a certifiable Dungeon.::par::And I have come here to clear it out.;;"
-	],"easeOut");
+		"icon::mu1:left;::base:red;I have lived the years of interim alone in a quiet home out in the woods, near the small town of Iniziare Citta. But I had more ambitious plans than to live my life in solitude and poverty, so I sold my home, bought equipment fit for an adventurer, and set off to this wretched place.;;",
+		"icon::mu1:right;::base:red;This subterranean, cliffside is known as the Den of the Red Fang, and inasmuch as I have come to understand it, that makes this a certifiable Dungeon.::par::And I have come here to clear it out.;;"
+	],"easeout");
 	DQ.addpage("img_test/124710034192.gif",[
-		"icon::mu1:left;base::red;To be sure, it is no easy task, but I have heard of many an adventurer perform this feat, and with all the stories of them, how hard can it be?::par::I have read many tales of such exploits, and it hardly seems much challenge at all.;;",
-		"icon::mu1:left;base::red;Surely a man such as myself could complete this task with minimal effort.::par::Surely.;;"
+		"icon::mu1:left;::base:red;To be sure, it is no easy task, but I have heard of many an adventurer perform this feat, and with all the stories of them, how hard can it be?::par::I have read many tales of such exploits, and it hardly seems much challenge at all.;;",
+		"icon::mu1:left;::base:red;Surely a man such as myself could complete this task with minimal effort.::par::Surely.;;"
 	],"");
 	DQ.addpage("img_test/124710039861.gif",[
-		"icon::mu1:left;base::red;So perhaps it is an easy task after all. Easy at least, for myself. For I am no ordinary man.::par::...though, I confess I have never gone dungeon-diving before. This will be my first attempt."
-	],"easeOut");
+		"icon::mu1:left;::base:red;::sound:swords;So perhaps it is an easy task after all. Easy at least, for myself. For I am no ordinary man.::par::...though, I confess I have never gone dungeon-diving before. This will be my first attempt.;;"
+	],"easeout");
 	</script>
 	
   </head>
-  <body onresize='DQ.showpage("DQimage","DQtext")'>
+  <body onresize='DQ.showpage("DQimage","DQtext",false,true)'>
 	<div id='image'>
 		<img id='DQimage' src='' alt='Image'/>
 	</div>
