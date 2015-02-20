@@ -8,6 +8,10 @@
     <script src="res/Quest_Presenter.js"></script>
     <script>
 	
+	<!-- mute mode -->
+	//DQ.nomusic=true; //background
+	//DQ.nosound=true; //sound effects
+	
 	<!-- custom Base styles -->
 	<!-- use "::base:name; your styled text. ;;" -->
 	DQ.styles["red"]=["<span style='color:red'>","</span>"];
@@ -27,6 +31,7 @@
 	DQ.sounds["swords"]="img_test/52458__audione__sword-01.mp3";
 	
 	<!-- add pages -->	
+	DQ.playmusic("img_test/The Tragic Prince.mp3",30,true,4);
 	DQ.addpage("img_test/Muschio_chapter1.gif",["<span style='font-size:8vh'>Divequest Ch 1</span>"],"easeout");
 	DQ.addpage("img_test/124710021160.gif",[
 		"::base:red;My father, the late King Malto of the Grand Kingdom of North Piacevole, was executed when the forces of rebellion seized the capital and claimed for themselves control of the Kingdom.They claimed a great many things, as rebels must, of unfair treatment, overzealous punishment, iron-fisted rule, and of course, excessive taxes.;;",
@@ -40,7 +45,7 @@
 		"icon::mu1:left;::base:red;To be sure, it is no easy task, but I have heard of many an adventurer perform this feat, and with all the stories of them, how hard can it be?::par::I have read many tales of such exploits, and it hardly seems much challenge at all.;;",
 		"icon::mu1:left;::base:red;Surely a man such as myself could complete this task with minimal effort.::par::Surely.;;"
 	],"");
-	DQ.addpage("img_test/124710039861.gif",[
+	DQ.addpage("img_test/divequest_ch2.swf",[
 		"icon::mu1:left;::base:red;::sound:swords;So perhaps it is an easy task after all. Easy at least, for myself. For I am no ordinary man.::par::...though, I confess I have never gone dungeon-diving before. This will be my first attempt.;;"
 	],"easeout");
 	</script>

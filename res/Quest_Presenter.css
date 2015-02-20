@@ -1,5 +1,5 @@
 /*divides text into intern_Text and intern_Icon using div and img childs*/
-div#DQ_intern_Text{
+#DQ_intern_Text{
 	width:80%;
 	margin:1vh;
 	max-height:100%;
@@ -7,7 +7,7 @@ div#DQ_intern_Text{
 	vertical-align:middle;
 }
 /*divides text into intern_Text and intern_Icon using div and img childs*/
-img#DQ_intern_Icon{
+#DQ_intern_Icon{
 	width:15%;
 	margin:1vh;
 	max-height:100%;

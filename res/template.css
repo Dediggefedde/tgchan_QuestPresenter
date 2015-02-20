@@ -2,22 +2,23 @@ html, body{
 	height: 100%;margin:0;
 	text-align:center;
 }
-div#image{
+#image{
 	height:80%;
 	text-align:center;
 	margin:0 auto;
 	position:relative;
 }
-img#DQimage{height:100%;}
-div#DQtext{
+#DQimage{height:100%;}
+#DQtext{
 	text-align:justify;
 	color:brown;	
 	padding:1vh 1vh 0px 1vh;
 	display:inline-block;
 	vertical-align:middle; 
 	font-size:2.5vh;
+	height:100%;
 }
-div#text{
+#text{
 	display:inline-block;
 	height:19%;
 	background:linear-gradient(0deg, #aaf, #cbe 40%, #ddd) repeat scroll 0 0 rgba(0, 0, 0, 0);
@@ -27,10 +28,10 @@ div#text{
 	margin:0 auto;	
 	position:relative; 
 }
-div#DQnext:hover,div#DQprev:hover{
+#DQnext:hover,#DQprev:hover{
 	opacity:1;	
 }
-div#DQnext,div#DQprev{
+#DQnext,#DQprev{
 	background-repeat: no-repeat;
 	background-size: contain;
 	cursor: pointer;
@@ -40,5 +41,5 @@ div#DQnext,div#DQprev{
 	top: 2px;
 	width: 7vh;
 }
-div#DQnext{right: 2px;background-image:url("next.png");}
-div#DQprev{left: 2px;background-image:url("prev.png");}
+#DQnext{right: 2px;background-image:url("next.png");}
+#DQprev{left: 2px;background-image:url("prev.png");}
