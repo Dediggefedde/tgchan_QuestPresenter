@@ -28,3 +28,15 @@
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
 }
+@keyframes Animzoom {0%{transform: scale(1);}100%{transform: scale(2);}}
+.zoom{		
+	animation-name: Animzoom;
+	animation-timing-function: ease-in;
+	animation-duration: 0.5s;	
+}
+@keyframes Animslide {0%{}100%{transform: translate(100px,0);opacity:0;}}
+.slide{		
+	animation-name: Animslide;
+	animation-timing-function: ease-in;
+	animation-duration: 0.5s;	
+}

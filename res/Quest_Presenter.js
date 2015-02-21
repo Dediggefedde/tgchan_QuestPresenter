@@ -10,25 +10,47 @@
 			Transition of pages				x
 			Transition of texts				x
 			Icons                           x
-			Additional Elementes	
-			background music
-			sound effects
+			Additional elements	page
+			background music                x
+			sound effects                   x
+			credit page
+			Use html as image
+			imageeffects
+			
 			
 	Thoughts:
-		primary:
-			use page as index:
-				array of images index i
-				2d Array of i -> texts index j
-				When showing (for i(for j(next();)))
-			style texts
-				1. Inline within javascript <<-- prefered
-				2. list of styles
-		secondary
-			background-music:
-				1. extern object -> start & stop page
-				2. page property -> "music.mp3" (remains) & empty (fadeout)
-			sound effect:
-				page property : "effect.mp3" & delay
+		
+		secondary:
+			sounds:
+				need delays?
+			html as image
+				e.g. canvas/animations
+				use similar technique as additional Elements
+				overlay-div restricted to last image-size or provided size
+				addpageElement("htmlName",["texts"],"transition")
+			additional elements
+				use ressource-Array (=> icons)
+				use an icon provided by template to popup when add. el. exists
+				clicking triggers display of overlay <div> 80% size
+				addHtmlElement("name","HTML");
+			credit page
+				center, autoscroll, style back/front
+				addcredits(["texts"],"backgroundstyle");
+			text
+				scrollbars for large Texts?
+			image effects
+				predefined effects: translate(SourceX,SourceY,TargetX,TargetY), Zoom(targetMag), ...
+				Necessary? Transitions can do all that:
+				on slide access: animate margins?
+				well, because transitions play at the end of the last slide to get to this one.
+				Effects will target the next frame
+				May extend addpage 
+			transitions:
+				change their point:
+				make a effekt at begin, transition at end regarding timeline
+			image
+				make a overflow:hidden
+				
 	*/
 	var DQ = DQ || {};
 	DQ.length=0;
