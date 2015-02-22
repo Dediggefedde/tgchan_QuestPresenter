@@ -1,0 +1,21 @@
+<canvas id='mycan'></canvas>
+
+<script>
+	var rotintval;
+	var canvas=document.getElementById('mycan');
+	var context = canvas.getContext('2d'),
+		SIZE=100,
+		centerX=canvas.width/2,
+		centerY=canvas.height/2,
+		rotation = 0;
+	clearInterval(rotintval);
+	var rotintval=setInterval(function(){rotation+=8;
+		context.save();
+		context.clearRect(0,0,canvas.width,canvas.height);
+		context.fillStyle='rgb(140,142,145)';
+		context.translate(centerX,centerY);
+		context.rotate(rotation*Math.PI/180);
+		context.fillRect(-SIZE/2,-SIZE/2,SIZE,SIZE);
+		context.restore();
+},30);
+</script>

@@ -7,16 +7,19 @@ html, body{
 	text-align:center;
 	margin:0 auto;
 	position:relative;
+	overflow:hidden;
 }
 #DQimage{height:100%;}
 #DQtext{
-	text-align:justify;
-	color:brown;	
-	padding:1vh 1vh 0px 1vh;
-	display:inline-block;
-	vertical-align:middle; 
-	font-size:2.5vh;
-	height:100%;
+	color: brown;
+    display: inline-block;
+    font-size: 2.5vh;
+    height: 97%;
+    overflow-y: auto;
+    padding: 1% 1% 0;
+    text-align: justify;
+    vertical-align: middle;
+    width: 98%;
 }
 #text{
 	display:inline-block;

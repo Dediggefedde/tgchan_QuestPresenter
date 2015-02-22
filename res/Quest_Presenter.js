@@ -15,7 +15,7 @@
 			sound effects                   x
 			credit page
 			Use html as image
-			imageeffects
+			imageeffects                    x
 			
 			
 	Thoughts:
@@ -35,44 +35,58 @@
 				addHtmlElement("name","HTML");
 			credit page
 				center, autoscroll, style back/front
-				addcredits(["texts"],"backgroundstyle");
-			text
-				scrollbars for large Texts?
-			image effects
-				predefined effects: translate(SourceX,SourceY,TargetX,TargetY), Zoom(targetMag), ...
-				Necessary? Transitions can do all that:
-				on slide access: animate margins?
-				well, because transitions play at the end of the last slide to get to this one.
-				Effects will target the next frame
-				May extend addpage 
-			transitions:
-				change their point:
-				make a effekt at begin, transition at end regarding timeline
-			image
-				make a overflow:hidden
-				
+				addcredits(["texts"],"backgroundstyle");				
 	*/
 	var DQ = DQ || {};
 	DQ.length=0;
 	DQ.index=0;
 	DQ.subindex=0;
-	DQ.textob=null;DQ.imgob=null;
+	DQ.textob=null;DQ.imgob=null;DQ.musicObj=null;
 	DQ.intransition=false;
 	DQ.page=[];
 	DQ.music=[];
 	DQ.nomusic=false;
 	DQ.nosound=false;
-	DQ.playmusic=function(music,volume,loop,fade){
+	DQ.playMusic=function(music,volume,loop,fade){
 		DQ.music[DQ.page.length]=[music,volume,loop,fade];
 	}
-	DQ.addpage=function(img,texts,trans){
+	DQ.addPage=function(img,texts,eff,trans){ // => array of imgs-urls, not loaded in cache here
 		DQ.page[DQ.length]={
 			image:img, //image url
 			texts:DQ.setstyle(texts), //array of texts
+			effect:eff,
 			transition:trans,
+			html:false,
+			scripts:null,
 		};
 		DQ.length++;
 	};
+	DQ.addHtmlPage=function(htm,texts,eff,trans){ //=> array of html-code inserted into a div-element. html files are loaded here, their content (e.g. img tags) not.
+		var zwiindex=DQ.length
+		setTimeout(function(){ //synchron request not in main thread
+			xmlHttp = new XMLHttpRequest();
+			xmlHttp.open( "GET", htm, false );
+			xmlHttp.setRequestHeader ("Accept", "text/plain");
+			xmlHttp.send( null );
+			var data =xmlHttp.responseText;
+			var ex=/<script[\s\S]*?>([\s\S]*?)<\/script>/gi;
+			var row=null;
+			var script=[];
+			while((row=ex.exec(data))!==null)
+				script.push(row[1]);
+			
+			data=data.replace(ex,"");
+			DQ.page[zwiindex]={
+				image:data, //html text
+				texts:DQ.setstyle(texts), //array of texts
+				effect:eff,
+				transition:trans,
+				html:true,
+				scripts:script,
+			};
+		},0);
+		DQ.length++;
+	}
 	DQ.styles={
 		"red":["<span style='color:red'>","</span>"],
 		"blue":["<span style='color:blue'>","</span>"],
@@ -122,7 +136,7 @@
 		}
 		return texts;
 	};
-	DQ.next=function(imgID,textID){	
+	DQ.next=function(){	
 		DQ.subindex++;
 		var startind=DQ.index;
 		if(DQ.subindex==DQ.page[DQ.index].texts.length && DQ.index<DQ.length-1){
@@ -133,10 +147,10 @@
 			return;
 		}
 		
-		DQ.showpage(imgID,textID,DQ.index!=startind);
+		DQ.showpage(startind);
 		if(DQ.index!=startind)DQ.preload();
 	}
-	DQ.prev=function(imgID,textID){	
+	DQ.prev=function(){	
 		DQ.subindex--;
 		var startind=DQ.index;
 		if(DQ.subindex==-1 && DQ.index>0){
@@ -147,12 +161,14 @@
 			return;
 		}
 		
-		DQ.showpage(imgID,textID,DQ.index!=startind);
+		DQ.showpage(startind);
 	}
 	DQ.start=function(imgID,textID){
 		DQ.subindex=0;
 		DQ.index=0;
-		DQ.showpage(imgID,textID);
+		DQ.textob=document.getElementById(textID);
+		DQ.imgob=document.getElementById(imgID)
+		DQ.showpage(-1);
 		DQ.preload();
 		document.addEventListener("keydown",function(e){
 			// console.log(e.which);
@@ -171,113 +187,163 @@
 		var img= new Image();
 		img.src=DQ.page[DQ.index+1].image;
 	}
-	DQ.showpage=function(imgID,textID,imgtransition=false,noTextupdate=false){	
-		DQ.textob=document.getElementById(textID);
-		DQ.imgob=document.getElementById(imgID)
-		// console.log(DQ,DQ.intransition);
-		if(DQ.page[DQ.index].image.indexOf(".swf")==DQ.page[DQ.index].image.length-4){
-			if(DQ.imgob.tagName=="IMG"&&!noTextupdate){
-				var el=document.createElement("embed");
-				el.width=DQ.imgob.offsetWidth;
-				el.height=DQ.imgob.offsetHeight;
+	DQ.fitsize=function(){		
+		DQ.textob.parentNode.style.width=(DQ.imgob.offsetWidth)+"px";
+	}
+	DQ.addmusic=function(){
+		var el=document.getElementById("DQ_intern_Music");
+		if(el!=null)el.parentNode.removeChild(el);
+		
+		//temporary audio element
+		//nice effect: using "" will stop music, coming back will restart it
+		
+		el=document.createElement("audio"); //no "controls", always "autoplay", optionally "loop"
+		el.autoplay='true';
+		el.id="DQ_intern_Music";
+		if(DQ.music[DQ.index][2])el.loop="true";
+		el.innerHTML="<source src='"+DQ.music[DQ.index][0]+"' type='audio/mpeg'>"; //only mpeg at the moment
+		el.volume=0;//silent for fading in
+		DQ.musicObj=el;
+		DQ.imgob.parentNode.appendChild(el);  //add music -> start it
+		
+		// fade in transition
+		var fadeAudioin = setInterval(function () {
+			if (DQ.musicObj!=null){
+				var max=DQ.music[DQ.index][1]/100.0; //scale volume 0 -> 1. DQ.music[DQ.index][1]: 0 -> 100
+				var step=max/(DQ.music[DQ.index][3]*10); //reach max in [3] s within 100ms steps
+			}
+			
+			if (DQ.musicObj!=null&&DQ.musicObj.volume < max) { //cap at max
+				if(DQ.musicObj.volume+step>max)DQ.musicObj.volume = max;else //cap at max
+					DQ.musicObj.volume += step; //increase volume fluently
+			}else {
+				clearInterval(fadeAudioin); //on reaching max-volume, stop fading
+			}
+		}, 100);
+	}
+	DQ.showpage=function(oldIndex){	
+		// console.log(oldIndex,DQ.index);
+		if(DQ.index!=oldIndex){ //img update 
+		
+			if(DQ.page[DQ.index].html){ //html pages
+				var el=document.createElement("div");
+				el.style.width=DQ.imgob.offsetWidth+"px";
+				el.style.height=DQ.imgob.offsetHeight+"px";
+				el.style.display="inline-block";
+				el.style.overflow="hidden";
 				el.id=DQ.imgob.id;
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
 				DQ.imgob=el;
-			}
-		}else{
-			if(DQ.imgob.tagName=="EMBED"&&!noTextupdate){
+			}else if(DQ.page[DQ.index].image.indexOf(".swf")==DQ.page[DQ.index].image.length-4&&DQ.imgob.tagName!="EMBED"){	
+				//on .swf use embed, elsewise img tags
+				var el=document.createElement("embed");
+				el.style.width=DQ.imgob.offsetWidth+"px";
+				el.style.height=DQ.imgob.offsetHeight+"px";
+				el.id=DQ.imgob.id;
+				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
+				DQ.imgob.parentNode.removeChild(DQ.imgob);
+				DQ.imgob=el;
+			}else if(DQ.page[DQ.index].image.indexOf(".swf")!=DQ.page[DQ.index].image.length-4&&DQ.imgob.tagName!="IMG"){
 				var el=document.createElement("img");
 				el.id=DQ.imgob.id;
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
 				DQ.imgob=el;
 			}
-		}
 		
-		if(imgtransition&&!DQ.intransition&&DQ.page[DQ.index].transition!=""){
-			DQ.intransition=true;
-			imgob2=DQ.imgob.cloneNode(true);		
-			imgob2.style.position="absolute";
-			imgob2.className=DQ.page[DQ.index].transition;
-			imgob2.addEventListener('animationend', function() {	
-				DQ.intransition=false;
-				// var imgID=this.id;
-				this.parentNode.removeChild(this);
-				// DQ.imgob=document.getElementById(imgID);
-				// DQ.imgob.src=DQ.page[DQ.index].image;
-				// DQ.showpage(imgID,textID);
-			});		
-			DQ.imgob.src=DQ.page[DQ.index].image;
-			DQ.imgob.parentNode.insertBefore(imgob2,DQ.imgob);
-		}else{
-			DQ.imgob.src=DQ.page[DQ.index].image;
-		}
-		
-		DQ.imgob.removeEventListener('load', adaptTextobWidth);	
-		DQ.imgob.addEventListener('load', adaptTextobWidth);	
-		
-		console.log(imgtransition,DQ.index,DQ.music,DQ.music[DQ.index]);
-		if(!DQ.nomusic&&(imgtransition||DQ.index==0)&&typeof DQ.music[DQ.index]!="undefined"){	
-			var addmusic=function(){
-				var el=document.getElementById("DQ_intern_Music");
-				if(el!=null)el.parentNode.removeChild(el);
+			//fading animation of previous slide. 
+			//DQ.intransition allows skipping slides with multiple clicks without having to wait for animation
+			//transition="" will also skip right ahead
+			//oldIndex==-1 means start
+			//algorithm: use a second same image which animate-fades while the original already has the next image
+			//TODO: showing-up animation of current slide: 
+			// console.log(oldIndex,DQ.intransition,DQ.imgob);
+			DQ.imgob.className="";			
+			if(oldIndex!=-1&&!DQ.intransition&&DQ.page[oldIndex].transition!=""){
+				DQ.intransition=true;
+				imgob2=DQ.imgob.cloneNode(true);		
+				imgob2.style.position="absolute";
+				imgob2.className=DQ.page[oldIndex].transition;
+				imgob2.addEventListener('animationend', function() {	
+					DQ.intransition=false;
+					this.parentNode.removeChild(this);
+					// start animation here
+					// console.log(DQ.page[DQ.index].effect);
+					if(DQ.page[DQ.index].effect!=""){//animation for showing up.
+						DQ.imgob.style.animationPlayState  = "running"; //start animation
+						// DQ.imgob.style.visibility="hidden" //show again and remove CSS visibility attributes
+						// DQ.imgob.className=DQ.page[DQ.index].effect; //effect CSS animation
+					}
+				});		
+				//TODO: src=image only when no start animation or else fragment between transitions
+				if(!DQ.page[DQ.index].html)DQ.imgob.src=DQ.page[DQ.index].image; //load new image
+				else DQ.imgob.innerHTML=DQ.page[DQ.index].image; //load new HTML page
 				
-				el=document.createElement("audio");
-				el.autoplay='true';
-				el.id="DQ_intern_Music";
-				if(DQ.music[DQ.index][2])el.loop="true";
-				el.innerHTML="<source src='"+DQ.music[DQ.index][0]+"' type='audio/mpeg'>";
-				el.volume=0;//(DQ.music[DQ.index][1]/100.0);
-				DQ.imgob.parentNode.appendChild(el);
-				var fadeAudioin = setInterval(function () {
-					var sound=document.getElementById("DQ_intern_Music");
-					if (sound!=null){
-						var max=DQ.music[DQ.index][1]/100.0;
-						var step=max/(DQ.music[DQ.index][3]*10); //*10 = /100ms
-					}
-					// console.log(step,max,DQ.music[DQ.index][3]);
-					if (sound!=null&&sound.volume < max) {
-						if(sound.volume+step>max)sound.volume = max;else
-							sound.volume += step;								
-					}else {
-						clearInterval(fadeAudioin);
-					}
-				}, 100);
+				if(DQ.page[DQ.index].effect!=""){//prepare animation for showing up.
+					// DQ.imgob.style.visibility="hidden"; //hide new img but reserve display-space
+					DQ.imgob.className="";
+					setTimeout(function(){
+						DQ.imgob.style.animationPlayState = "paused"; //hold animation at 0%.
+						DQ.imgob.className=DQ.page[DQ.index].effect; //effect CSS animation
+					},0);					
+				}
+				DQ.imgob.parentNode.insertBefore(imgob2,DQ.imgob);
+			}else{ //no end-animation	
+				if(DQ.page[DQ.index].effect!=""){ //animation for showing up.
+					DQ.imgob.className="";
+					setTimeout(function(){
+						// DQ.imgob.style.animationPlayState = "paused"; //hold animation at 0%.
+						DQ.imgob.className=DQ.page[DQ.index].effect; //effect CSS animation
+					},0);
+				}
+				
+				if(!DQ.page[DQ.index].html)DQ.imgob.src=DQ.page[DQ.index].image; //load new image
+				else DQ.imgob.innerHTML=DQ.page[DQ.index].image; //load new HTML page
+						
 			}
-			if(DQ.music[DQ.index][3]>0){		
-				var fadeAudioout = setInterval(function () {
+			if(DQ.page[DQ.index].scripts!=null){
+				for(var i=0;i<DQ.page[DQ.index].scripts.length;i++){
+					var s=document.createElement("script");
+					s.innerHTML=DQ.page[DQ.index].scripts[i];
+					document.body.appendChild(s);
+					document.body.removeChild(s);
+				}
+			}
+			
+			//adapt textsize to imgsize when img loaded
+			DQ.imgob.removeEventListener('load', DQ.fitsize);	
+			DQ.imgob.addEventListener('load', DQ.fitsize);	
+		}
+		
+		//Text change // when there is no img-change and showpage is called, it's only textchange
+		
+		//music
+		if(!DQ.nomusic&&typeof DQ.music[DQ.index]!="undefined"){ //add no music when silent, leave old music when no new one
+			if(oldIndex>0&&DQ.music[oldIndex][3]>0){ //fadeout old music. would also work on [3]=0=fade-time, but is OP then 		
+				var fadeAudioout = setInterval(function () { //see fadein addmusic in for comments
 					var sound=document.getElementById("DQ_intern_Music");
 					if (sound!=null){
-						var max=DQ.music[DQ.index][1]/100.0;
-						var step=max/(DQ.music[DQ.index][3]*10); //*10 = /100ms
+						var max=DQ.music[oldIndex][1]/100.0;
+						var step=max/(DQ.music[oldIndex][3]*10); //*10 = /100ms
 					}
 					if (sound!=null&&sound.volume > 0.0) {
 						if(sound.volume-step<0)sound.volume = 0;else
 							sound.volume -= step;									
 					}else {
-						clearInterval(fadeAudioout);
-						addmusic();
+						clearInterval(fadeAudioout); //start new music after fading out complete
+						DQ.addmusic();
 					}
 				}, 100);
 			}else{
-				addmusic();
+				DQ.addmusic(); //fade in new music 
 			}
-	
 		}
-		if(noTextupdate)return
-			
+		
+		//sound effects and text content change
 		if(DQ.nosound)DQ.textob.innerHTML=DQ.page[DQ.index].texts[DQ.subindex].replace(/<audio.*?audio>/g,"");
 		else DQ.textob.innerHTML=DQ.page[DQ.index].texts[DQ.subindex];
 		
-		adaptTextobWidth();
+		//adapt text to img-size.
+		DQ.fitsize();
 	};
-	function adaptTextobWidth(){
-		DQ.textob.parentNode.style.width=(DQ.imgob.offsetWidth)+"px";	
-	}
-	
-/* Animations */
-	
-	
-	
-	
