@@ -14,28 +14,38 @@
 			background music                x
 			sound effects                   x
 			credit page
-			Use html as image
+			Use html as image               x
 			imageeffects                    x
-			
+			table of content
 			
 	Thoughts:
 		
 		secondary:
+			template:
+				top-menu on hover: mute music, mute sound, show toc
 			sounds:
 				need delays?
-			html as image
-				e.g. canvas/animations
-				use similar technique as additional Elements
-				overlay-div restricted to last image-size or provided size
-				addpageElement("htmlName",["texts"],"transition")
 			additional elements
 				use ressource-Array (=> icons)
 				use an icon provided by template to popup when add. el. exists
-				clicking triggers display of overlay <div> 80% size
-				addHtmlElement("name","HTML");
+				clicking triggers display of overlay
+				Needs vertical scrollbar.
+				2 types of overlay: text/img simple OR HTML
+				text/img simple:
+					["text1","text2","::icon:img1;"]
+					or [["text1","left"],["text1","right"],["::icon:img1;","left"]]
+					get's wrapped in <div> each, position relative, left/right:~0
+					background-color/ sets in template.css (=img-size, color: transparent grey)
+				HTML
+					as html-image, this needs an outside file.
+					as html-image, script-tags need to get extracted.				
 			credit page
 				center, autoscroll, style back/front
-				addcredits(["texts"],"backgroundstyle");				
+				addcredits(["texts"],"backgroundstyle");	
+			icons:
+				additional parameter for size inside overlays
+			fitsize:
+				embed and html doesn't scale 
 	*/
 	var DQ = DQ || {};
 	DQ.length=0;
