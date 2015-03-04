@@ -177,7 +177,7 @@
 		DQ.subindex=0;
 		DQ.index=0;
 		DQ.textob=document.getElementById(textID);
-		DQ.imgob=document.getElementById(imgID)
+		DQ.imgob=document.getElementById(imgID);
 		DQ.showpage(-1);
 		DQ.preload();
 		document.addEventListener("keydown",function(e){
@@ -234,9 +234,10 @@
 	DQ.showpage=function(oldIndex){	
 		// console.log(oldIndex,DQ.index);
 		if(DQ.index!=oldIndex){ //img update 
-		
-			if(DQ.page[DQ.index].html){ //html pages
-				var el=document.createElement("div");
+			// if(DQ.page[DQ.index].html){ //html pages
+			if(DQ.page[DQ.index].image.indexOf(".html")==DQ.page[DQ.index].image.length-5&&DQ.imgob.tagName!="iframe"){ //html pages
+				// var el=document.createElement("div");
+				var el=document.createElement("iframe");
 				el.style.width=DQ.imgob.offsetWidth+"px";
 				el.style.height=DQ.imgob.offsetHeight+"px";
 				el.style.display="inline-block";
@@ -245,12 +246,18 @@
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
 				DQ.imgob=el;
-			}else if(DQ.page[DQ.index].image.indexOf(".swf")==DQ.page[DQ.index].image.length-4&&DQ.imgob.tagName!="EMBED"){	
+			// }else if(DQ.page[DQ.index].image.indexOf(".swf")==DQ.page[DQ.index].image.length-4&&DQ.imgob.tagName!="EMBED"){	
+			}else if(DQ.page[DQ.index].image.indexOf(".swf")==DQ.page[DQ.index].image.length-4&&DQ.imgob.tagName!="iframe"){	
 				//on .swf use embed, elsewise img tags
-				var el=document.createElement("embed");
+				// var el=document.createElement("embed");
+				var el=document.createElement("iframe");
 				el.style.width=DQ.imgob.offsetWidth+"px";
 				el.style.height=DQ.imgob.offsetHeight+"px";
+				el.width=DQ.imgob.offsetWidth+"px";
+				el.height=DQ.imgob.offsetHeight+"px";
 				el.id=DQ.imgob.id;
+				el.type="application/x-shockwave-flash";
+				
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
 				DQ.imgob=el;
@@ -282,8 +289,15 @@
 					// console.log(DQ.page[DQ.index].effect);
 					if(DQ.page[DQ.index].effect!=""){//animation for showing up.
 						DQ.imgob.style.animationPlayState  = "running"; //start animation
-						// DQ.imgob.style.visibility="hidden" //show again and remove CSS visibility attributes
-						// DQ.imgob.className=DQ.page[DQ.index].effect; //effect CSS animation
+					}
+				});					
+				imgob2.addEventListener('webkitAnimationEnd', function() {	
+					DQ.intransition=false;
+					this.parentNode.removeChild(this);
+					// start animation here
+					// console.log(DQ.page[DQ.index].effect);
+					if(DQ.page[DQ.index].effect!=""){//animation for showing up.
+						DQ.imgob.style.animationPlayState  = "running"; //start animation
 					}
 				});		
 				//TODO: src=image only when no start animation or else fragment between transitions
