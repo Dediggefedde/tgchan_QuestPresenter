@@ -41,8 +41,48 @@ html, body{
 	height: 7vh;
 	opacity: 0.2;
 	position: absolute;
-	top: 2px;
+	top: 1vh;
 	width: 7vh;
 }
-#DQnext{right: 2px;background-image:url("next.png");}
-#DQprev{left: 2px;background-image:url("prev.png");}
+#DQextra{
+	background-repeat: no-repeat;
+	background-size: contain;
+	cursor: pointer;
+	height: 7vh;
+	opacity: 0.4;
+	position: absolute;
+	top: 5vh;
+	width: 7vh;
+}
+#DQextrapage{
+	position:absolute;
+	display:inline-block;
+	background-color: rgba(125,125,125,0.95);	
+    text-align: right;
+}
+#DQextrapage #DQextrawrapper{
+	/*bottom: 0;
+    display: flex;
+    flex-direction: column-reverse;
+	position:absolute;*/
+	display:table-cell; 
+	vertical-align:bottom; 
+}
+#DQextrapage .DQextrawrapper2{
+	max-height:100%;
+	overflow-y:auto;    
+	overflow-x: hidden;
+}
+#DQextrapage .DQextraline{
+    display: flex;
+}
+#DQextrapage .DQextracell {
+    background-color: #ccc;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 1vh;
+    text-align: justify;
+}
+#DQnext{right: 1vh;background-image:url("next.png");}
+#DQprev{left: 1vh;background-image:url("prev.png");}
+#DQextra{right: 1vh;background-image:url("prev.png");}

@@ -45,10 +45,18 @@
 	DQ.intransition=false;
 	DQ.page=[];
 	DQ.music=[];
+	DQ.extras=[];
 	DQ.nomusic=false;
 	DQ.nosound=false;
 	DQ.playMusic=function(music,volume,loop,fade){
 		DQ.music[DQ.page.length]=[music,volume,loop,fade];
+	}
+	DQ.addExtra=function(texts){ //needs trigger, content and style
+		//texts is array of text or images. 
+		//Problem: image-size
+		//solution inconsistent array-element-type: string=text, array(3)=(url,style)
+		//total w/h: image-size. 
+		DQ.extras[DQ.length]=texts; //["text1",["img1","width:100%;"],"text2"] => javascript object-type ftw.
 	}
 	DQ.addPage=function(img,texts,eff,trans){ // => array of imgs-urls, not loaded in cache here
 		DQ.page[DQ.length]={
@@ -163,11 +171,14 @@
 		
 		DQ.showpage(startind);
 	}
-	DQ.start=function(imgID,textID){
+	DQ.start=function(imgID,textID,extraID){
 		DQ.subindex=0;
 		DQ.index=0;
+		var mat=null;
+		if((mat=location.href.match(/DQpage=(\d+)/i))!==null)DQ.index=mat[1];
 		DQ.textob=document.getElementById(textID);
-		DQ.imgob=document.getElementById(imgID)
+		DQ.imgob=document.getElementById(imgID);
+		DQ.extraob=document.getElementById(extraID);
 		DQ.showpage(-1);
 		DQ.preload();
 		document.addEventListener("keydown",function(e){
@@ -189,6 +200,16 @@
 	}
 	DQ.fitsize=function(){		
 		DQ.textob.parentNode.style.width=(DQ.imgob.offsetWidth)+"px";
+		var extrapage=document.getElementById("DQextrapage");
+		if(extrapage!=null){
+			extrapage.style.width=DQ.imgob.offsetWidth+"px";
+			extrapage.style.height=DQ.imgob.offsetHeight+"px";
+			
+			extrapage=document.getElementById("DQextrawrapper");
+			extrapage.style.width=DQ.imgob.offsetWidth+"px";
+			extrapage.style.height=DQ.imgob.offsetHeight+"px";
+			
+		}
 	}
 	DQ.addmusic=function(){
 		var el=document.getElementById("DQ_intern_Music");
@@ -221,8 +242,18 @@
 			}
 		}, 100);
 	}
+	DQ.extra=function(){
+		var p=document.getElementById("DQextrapage");
+		if(p===null)return;
+		if(p.style.display=="none")p.style.display="inline-block";
+		else p.style.display="none";		
+	}
 	DQ.showpage=function(oldIndex){	
 		// console.log(oldIndex,DQ.index);
+		// if(location.href.indexOf("DQpage=")!=-1)location.href=location.href.replace(/DQpage=\d+/i,"DQpage="+DQ.index);
+		// else if(location.href.indexOf("?")!=-1)location.href += "&DQpage="+DQ.index;
+		// else location.href += "?DQpage="+DQ.index;
+		
 		if(DQ.index!=oldIndex){ //img update 
 		
 			if(DQ.page[DQ.index].html){ //html pages
@@ -231,6 +262,7 @@
 				el.style.height=DQ.imgob.offsetHeight+"px";
 				el.style.display="inline-block";
 				el.style.overflow="hidden";
+				// el.style.position="absolute";
 				el.id=DQ.imgob.id;
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
@@ -240,6 +272,7 @@
 				var el=document.createElement("embed");
 				el.style.width=DQ.imgob.offsetWidth+"px";
 				el.style.height=DQ.imgob.offsetHeight+"px";
+				// el.style.position="absolute";
 				el.id=DQ.imgob.id;
 				DQ.imgob.parentNode.insertBefore(el,DQ.imgob);
 				DQ.imgob.parentNode.removeChild(DQ.imgob);
@@ -346,4 +379,32 @@
 		
 		//adapt text to img-size.
 		DQ.fitsize();
+		
+		//add extra content
+		var prevextra=document.getElementById("DQextrapage");
+		if(prevextra!=null)prevextra.parentNode.removeChild(prevextra);
+		
+		if(DQ.extras[DQ.index]!=null){
+			DQ.extraob.style.visibility="visible";
+			
+			var extrapage=document.createElement("div");		
+			extrapage.style.width=DQ.imgob.offsetWidth+"px";
+			extrapage.style.height=DQ.imgob.offsetHeight+"px";
+			extrapage.id="DQextrapage";
+			extrapage.style.display="none";
+			
+			var inhtml="<div id='DQextrawrapper' style='height:"+DQ.imgob.offsetHeight+"px'><div class='DQextrawrapper2'>";
+			for(var i=0;i<DQ.extras[DQ.index].length;i++){
+				if(typeof DQ.extras[DQ.index][i]=== 'string')
+					inhtml+="<div class='DQextraline'><div class='DQextracell'>"+DQ.extras[DQ.index][i]+"</div></div>";
+				else
+					inhtml+="<div class='DQextraline'><img src='"+DQ.extras[DQ.index][i][0]+"' style='"+DQ.extras[DQ.index][i][1]+"' alt='extraimg'/></div></div>";
+			}
+			inhtml+="</div>";
+			extrapage.innerHTML=inhtml;
+
+			DQ.imgob.parentNode.insertBefore(extrapage,DQ.imgob);
+		
+		}else
+			DQ.extraob.style.visibility="hidden";
 	};
