@@ -17,40 +17,64 @@
 
 /*Animations transitions*/
 @keyframes Animinvert {0%{}100%{filter: invert(1);}}
+@-webkit-keyframes Animinvert {0%{}100%{filter: invert(1);}}
 .invert{		
 	animation-name: Animinvert;
 	animation-timing-function: ease-in;
 	animation-duration: 1s;	
+	-webkit-animation-name: Animinvert;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 1s;	
 }
 @keyframes Animeaseout {0%{}100%{opacity:0;}}
+@-webkit-keyframes Animeaseout {0%{}100%{opacity:0;}}
 .easeout{		
 	animation-name: Animeaseout;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
+	-webkit-animation-name: Animeaseout;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0.5s;	
 }
 @keyframes Animzoom {0%{}100%{transform: scale(2);}}
+@-webkit-keyframes Animzoom {0%{}100%{transform: scale(2);}}
 .zoom{		
 	animation-name: Animzoom;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
+	-webkit-animation-name: Animzoom;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0.5s;	
 }
 @keyframes Animslide {0%{}100%{transform: translate(100px,0);opacity:0;}}
+@-webkit-keyframes Animslide {0%{}100%{transform: translate(100px,0);opacity:0;}}
 .slide{		
 	animation-name: Animslide;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
+	-webkit-animation-name: Animslide;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0.5s;	
 }
 /*Animations effects*/
 
 @keyframes Animeasein {0%{opacity:0;}100%{opacity:1;}}
+@-webkit-keyframes Animeasein {0%{opacity:0;}100%{opacity:1;}}
 .easein{		
 	animation-name: Animeasein;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
+	-webkit-animation-name: Animeasein;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0.5s;	
 }
 @keyframes Animreinvert {0%{}50%{filter: invert(1);}100%{}}
+@-webkit-keyframes Animreinvert {0%{}50%{filter: invert(1);}100%{}}
 .reinvert{		
 	animation-name: Animreinvert;
 	animation-timing-function: ease-in;
 	animation-duration: 0.5s;	
+	-webkit-animation-name: Animreinvert;
+	-webkit-animation-timing-function: ease-in;
+	-webkit-animation-duration: 0.5s;	
 }
